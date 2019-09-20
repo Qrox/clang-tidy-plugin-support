@@ -20,29 +20,25 @@ llvm_dir=/usr/lib/llvm-8/lib/cmake/llvm
 test -f "$llvm_dir/LLVMConfig.cmake"
 
 function git_clone {
-  git clone --depth 1 --branch release_80 "$@"
+  git clone --depth 1 --branch release/8.x "$@"
 }
 
-git_clone https://github.com/llvm-mirror/clang.git
-cd clang/tools
-git_clone https://github.com/llvm-mirror/clang-tools-extra.git extra
-cd ..
+git_clone https://github.com/llvm/llvm-project.git
 
-patch -p1 < ../compatibility.patch
-patch -p1 < ../plugin-support.patch
+patch -p1 < plugin-support.patch
 
 mkdir build
 cd build
 cmake \
   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+  -DLLVM_ENABLE_PROJECTS='clang;clang-tools-extra' \
   -DCMAKE_BUILD_TYPE=MinSizeRel \
-  -DCMAKE_EXE_LINKER_FLAGS="-rdynamic -fuse-ld=lld" \
+  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" \
   -DLLVM_INCLUDE_TESTS=OFF \
   -DLLVM_TARGETS_TO_BUILD="" \
   -DCLANG_ENABLE_ARCMT=OFF \
-  -DLLVM_DIR="$llvm_dir" \
-  ..
-  # -DCLANG_ENABLE_STATIC_ANALYZER=OFF \
+#  -DCLANG_ENABLE_STATIC_ANALYZER=OFF \
+  ../llvm
 #cat CMakeCache.txt
 # Loop over targets so we can abort when aproaching the 50 minute Travis time
 # limit
