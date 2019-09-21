@@ -25,6 +25,7 @@ function git_clone {
 
 git_clone https://github.com/llvm/llvm-project.git
 
+cd llvm-project
 patch -p1 < plugin-support.patch
 
 mkdir build
