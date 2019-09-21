@@ -15,10 +15,6 @@ function build_time {
 export CC=clang-8
 export CXX=clang++-8
 
-llvm_dir=/usr/lib/llvm-8/lib/cmake/llvm
-
-test -f "$llvm_dir/LLVMConfig.cmake"
-
 function git_clone {
   git clone --depth 1 --branch release/8.x "$@"
 }
